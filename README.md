@@ -67,6 +67,10 @@ app.listen(3000, function() {
   * `node index.js`
 
 #### 터미널에서 curl 명령어를 통해 서버에 요청 보내기
-  * `curl http://localhost:3000/api/recipe`
+  * `curl http://localhost:3000/api/recipe \         
+-X POST \                            
+-H "Content-type: application/json" \    
+-d '{"key1": "value1", "key2": "value2"}'
+`
 
 #### 실제 서비스에선 curl을 통해서 보내던 요청을 카카오 봇 시스템이 수행. 그리고 실행 결과를 토대로 출력 모양을 결정
