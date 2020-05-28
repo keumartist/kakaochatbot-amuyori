@@ -3,49 +3,30 @@ const app = express();
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 
-const apiRouter = express.Router();
+const RecipeList = require('./responseBodies/recipeList');
 
+const apiRouter = express.Router();
 app.use(logger('dev', {}));
 app.use(bodyParser.json());
 app.use('/api', apiRouter);
 
-apiRouter.post('/recipe', function(req, res) {
-  const responseBody = {
-    version: "2.0",
-    template: {
-      outputs: [
-        {
-          simpleText: {
-            text: "Shashlik recipe"
-          }
-        }
-      ]
-    }
-  };
+app.use(express.static('images'));
 
-  res.status(200).send(responseBody); // 200 : OK. 요청이 성공했음을 의미
+apiRouter.get('/allRecipes', function (req, res) {
+  const rs = "<h1>👑아무요리 레시피 리스트</h1>"
+  res.status(200).send(rs);
 });
 
-apiRouter.post('/dishImage', function(req, res) {
-  console.log(req.body);
+apiRouter.post('/recipeCarosel', function (req, res) {
 
-  const responseBody = {
-    version: "2.0",
-    template: {
-      outputs: [
-        {
-          simpleImage: {
-            imageUrl: "https://t1.daumcdn.net/friends/prod/category/M001_friends_ryan2.jpg",
-            altText: "dish image"
-          }
-        }
-      ]
-    }
-  };
-
-  res.status(200).send(responseBody);
+  // forEach 때문에 비동기로 처리
+  RecipeList.carousel()
+    .then(function (result) {
+      res.status(200).send(result)
+      }
+    )
 });
 
-app.listen(3000, function() {
+app.listen(3000, function () {
   console.log('Example skill server listening on port 3000!');
 });
