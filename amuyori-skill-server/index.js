@@ -17,14 +17,11 @@ apiRouter.get('/allRecipes', function (req, res) {
   res.status(200).send(rs);
 });
 
-apiRouter.post('/recipeCarosel', function (req, res) {
+apiRouter.post('/recipeCarousel', function (req, res) {
 
-  // forEach 때문에 비동기로 처리
-  RecipeList.carousel()
-    .then(function (result) {
-      res.status(200).send(result)
-      }
-    )
+  const recipeCarousel = RecipeList.carousel()
+  res.status(200).send(recipeCarousel)
+   
 });
 
 app.listen(3000, function () {

@@ -34,29 +34,40 @@ const name = '고등어 찜';
 const mainPhoto = 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00167_1.png';
 
 class RecipeList {
-  static async carousel() {
+  static carousel() {
+
+    let basicCardList = [];
+
+    for (let i = 0; i < process.length; i++) {
+      const basicCard = {
+        description: process[i],
+        thumbnail: {
+          imageUrl: processImages[i]
+        }
+      };
+      basicCardList.push(basicCard);
+    }
+
     const carousel = {
       version: '2.0',
       template: {
         outputs: [
-          process.forEach(function (process, index) {
-            const rs = {
-              description: process,
-              thumbnaiel: {
-                imageUrl: processImages[index]
-              }
-            };
-            return rs;
-          }),
-          
+          {
+            carousel: {
+              type: 'basicCard',
+              items: basicCardList
+            }
+          },
+
           {
             simpleText: {
-              text: ingredients
+              text: ingredients + '가나다'
             }
           }
         ]
       }
     };
+    
     return carousel;
   }
 }
