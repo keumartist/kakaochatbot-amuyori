@@ -1,6 +1,6 @@
 // recipe list response
 
-const defaultProcessImage = 'https://amuyori-skillserver-dymeb.run.goorm.io/amuyori.png';
+const defaultProcessImage = '52.79.233.236/amuyori.png';
 // 레시피 이름 DB에서 꺼내오기. 일단은 샘플 데이터로 한다
 const ingredients =
   '주재료\n 고등어 200g(1/2마리), 미나리 e20g, 대파 40g(1개),파기름 45g(3큰술), 홍고추 5g(1/2개), 레몬(껍질) 5g(1작은술), 생강 2g(1/2작은술), 식초 5g(1작은술), 다진 마늘 5g(1작은술) \n\n소스\n 양조간장 15g(1큰술), 다시마 5g, 생강즙 2g(1/2작은술), 다진 마늘 2g(1/2작은술), 다진 청양고추 20g(1⅓큰술),레몬(즙) 10g(2작은술), 식초 15g(1큰술), 설탕 10g(2작은술), 후춧가루 1g 장식 시금치 40g, 방울토마토 40g(1/4개)';
