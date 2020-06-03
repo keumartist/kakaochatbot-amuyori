@@ -4,7 +4,7 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 
 const RecipeList = require('./responseBodies/recipeList');
-const allRecipes = require('./htmlElements');
+const allRecipes = require('./htmlElements/allRecipes');
 
 const apiRouter = express.Router();
 app.use(logger('dev', {}));
@@ -22,7 +22,7 @@ apiRouter.post('/recipeCarousel', function (req, res) {
 
   const name = req.body;
   console.log("req : " + name);
-  
+
   const recipeList = new RecipeList("name");
   recipeList.searchRecipe(function(carousel) {
    // console.log("결과 : " + carousel);
