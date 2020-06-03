@@ -20,14 +20,17 @@ apiRouter.get('/allRecipes', function (req, res) {
 
 apiRouter.post('/recipeCarousel', function (req, res) {
 
-  const name = req.body;
+  const name = req.body.action.params.name;
   console.log("req : " + name);
+  console.log("name != undefined : " + name != "undefined");
 
-  const recipeList = new RecipeList("name");
-  recipeList.searchRecipe(function(carousel) {
-   // console.log("결과 : " + carousel);
-    res.status(200).send(carousel)
-  })
+  if (name != "undefined") {
+    const recipeList = new RecipeList(name);
+    recipeList.searchRecipe(function(carousel) {
+    // console.log("결과 : " + carousel);
+      res.status(200).send(carousel)
+    })
+  }
 });
 app.listen(3000, function () {
   console.log('Example skill server listening on port 3000!');
