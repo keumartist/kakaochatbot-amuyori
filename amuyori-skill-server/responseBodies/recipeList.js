@@ -1,8 +1,6 @@
-// recipe list response
-
 const Data = require('../data/data');
 
-let defaultProcessImage = 'http://52.79.233.236:3000/amuyori.png';
+let defaultProcessImage = '';
 
 let ingredient = '';
 let manual = [];
@@ -11,18 +9,30 @@ let recipeName = '';
 let mainPhoto = '';
 
 let recommendNames = [];
-let recommendMainImg =[];
+let recommendMainImg = [];
 
 let situationName = "";
 
 class RecipeList {
 
- constructor(name, column) {
+  constructor(name, column) {
     this.name = name;
     this.column = column;
   }
 
- recommendRecipe(fn) {
+  todayRecipe(fn) {
+    const data = new Data(this.column, "")
+    data.connectToMysql(function (rows) {
+      const rcName = rows[0]['RCP_NM'];
+
+      const todayRecipe = RecipeList.todayRecipe(rcName);
+
+      fn(todayRecipe);
+    })
+
+  }
+
+  recommendRecipe(fn) {
     const data = new Data(this.column, this.name);
 
     situationName = this.name;
@@ -31,7 +41,7 @@ class RecipeList {
       // console.log("rows : " + rows+ " .. type : " + typeof(rows));
       if (typeof rows === undefined || Object.keys(rows).length === 0) { return }
 
-      for (let i=0; i<rows.length; i++) {
+      for (let i = 0; i < rows.length; i++) {
         recommendNames.push(rows[i]['RCP_NM']);
         recommendMainImg.push(rows[i]['ATT_FILE_NO_MK']);
       }
@@ -41,21 +51,18 @@ class RecipeList {
       fn(carousel);
 
       recommendNames = [];
-      recommendMainImg =[];
+      recommendMainImg = [];
     })
   }
 
   searchRecipe(fn) {
 
-    //console.log("name : " + this.column  + "--" +  this.column=="name");
-    //if (this.column === "name") { const data = new Data("name", this.name) }
-
     const data = new Data("name", this.name);
-   //else if (this.column == "ingredient") { const data = new Data(this.column, this.name) }
+    //else if (this.column == "ingredient") { const data = new Data(this.column, this.name) }
 
     data.connectToMysql(function (rows) {
-     //  console.log(rows);
-     // console.log("rows : " + rows+ " .. type : " + typeof(rows));
+      //  console.log(rows);
+      // console.log("rows : " + rows+ " .. type : " + typeof(rows));
       if (typeof rows === "undefined" || Object.keys(rows).length === 0) { return }
 
       const row = rows[0]
@@ -68,11 +75,11 @@ class RecipeList {
 
         const manualImgCol = "MANUAL_IMG0" + i;
 
-        if (row[manualCol] != "NULL" && row[manualCol] != "None" ) { manual.push(row[manualCol]); }
+        if (row[manualCol] != "NULL" && row[manualCol] != "None") { manual.push(row[manualCol]); }
 
-        if (row[manualImgCol] != "NULL" && row[manualImgCol] != "None" ) {
+        if (row[manualImgCol] != "NULL" && row[manualImgCol] != "None") {
           manualImages.push(row[manualImgCol]);
-        } else if (row[manualCol] != "NULL" && row[manualCol] != "None" ) {
+        } else if (row[manualCol] != "NULL" && row[manualCol] != "None") {
           manualImages.push(defaultProcessImage);
         }
       }
@@ -88,10 +95,51 @@ class RecipeList {
     })
   }
 
+  static todayRecipe(name) {
+    const rcName = name
+    const txt = '\"?~Z~T리?~Y~U ?~J??~D ?~T?~\ ?~X??~J~X?~]~X ?~T?~I?\"?~J~T ?~T?~\ ?~]?거?~K? \n\n'
+    const isThatGoodTxt = '?~V??~U~L? \n먹?|  ?~K??~@ ?~U~J?~J~P?~C~P? ?~_~X?'
+
+    const textFieldsWithQR = {
+      version: '2.0',
+      template: {
+        outputs: [
+          {
+            simpleText: {
+              text: txt + rcName
+            }
+          },
+          {
+            simpleText: {
+              text: isThatGoodTxt
+            }
+          }
+        ],
+        "quickReplies": [
+          {
+            "action": "message",
+            "label": "먹?|  ?~K??~V??~Z~T",
+            "messageText": rcName,
+          },
+          {
+            "action": "message",
+            "label": "?~\찮?~J??~K~H?~K?",
+            "messageTest": "?~\찮?~J??~K~H?~K?"
+
+          }
+        ]
+      }
+    }
+    return textFieldsWithQR
+  }
+
   static recommendCarousel() {
     let basicCardList = [];
 
-    for (let i = 0; i < recommendNames.length; i++) {
+    let recipesLength = recommendNames.length;
+    if (recommendNames.length > 20) { recipesLength = 20 }
+
+    for (let i = 0; i < recipesLength; i++) {
       const basicCard = {
         title: recommendNames[i],
         thumbnail: {
@@ -102,8 +150,8 @@ class RecipeList {
             action: "message",
             label: "?| ~H?~K~\?~T? 보기",
             messageText: recommendNames[i],
-           // blockId: "5ed65292d30dd70001af874d",
-            extra : {"name": recommendNames[i] }
+            // blockId: "5ed65292d30dd70001af874d",
+            extra: { "name": recommendNames[i] }
 
           }
         ]
@@ -145,34 +193,13 @@ class RecipeList {
     const query = recipeName.replace(/\s/g, '');
     const youtubeUrl = "https://www.youtube.com/results?search_query=" + query;
 
-
-   /*  const header = { "header": {
-            "title": "abcd",
-            "description": "adsf",
-            "thumbnail": {
-              "imageUrl": "http://k.kakaocdn.net/dn/83BvP/bl20duRC1Q1/lj3JUcmrzC53YIjNDkqbWK/i_6piz1p.jpg"
-            }
-          }
-    }
-   
-    
-    basicCardList.push(
-      {
-        title: recipeName,
-        thumbnail: {
-          imageUrl: mainPhoto,
-          fixedRatio: true
-        }
-      }
-    ) */
-
     for (let i = 0; i < manual.length; i++) {
       const basicCard = {
         description: manual[i],
         thumbnail: {
           imageUrl: manualImages[i],
           fixedRatio: true
-         }
+        }
       };
       basicCardList.push(basicCard);
     }
@@ -184,12 +211,13 @@ class RecipeList {
             carousel: {
               type: 'basicCard',
               header: {
-            "title": recipeName,
-            "description": "?~X~F?~\??~\ ?~D~X기면?~D~\ 보거?~]?!",
-            "thumbnail": {
-              "imageUrl": mainPhoto
-           }
-          },
+                "title": recipeName,
+                "description": "?~X~F?~\??~\ ?~D~X기면?~D~\ 보거?~]?!",
+                "thumbnail": {
+                  "imageUrl": mainPhoto,
+                  "fixedRatio": true
+                }
+              },
               items: basicCardList
             }
           },
@@ -201,21 +229,21 @@ class RecipeList {
           },
           {
             simpleText: {
-              text: "?~X~A?~C~A?~]~D 보?|  ?~K??~\??~C~P? (?~X~A?~C~A?~]??~^~Q ?| ~H?~K~\?~T??~@ ?| ~U?~Y~U?~^~H 매칭?~P~X?~@ ?~U~J?~]~D ?~H~X ?~O~D ?~^~H?~K?)"
-           }
+              text: "?~Z~T리 과?| ~U?~]~D ?~X~A?~C~A?~\??~\ 보?|  ?~K??~J~P?~C~P? ?~_?~T \n(?~X~A?~C~A?~]??~^~Q ?| ~H?~K~\?~T??~^~Q ?| ~U?~Y~U?~^~H 매칭?~P~X?~@ ?~U~J?~]~D ?~H~X?~O~D ?~^~H?~K?)"
+            }
           }
         ],
 
-          "quickReplies": [
-         {
-          "action": "message",
-          "label": "?~D?",
-          "messageText": youtubeUrl,
-         },
-         {
-          "action": "message",
-         "label": "?~U~D?~K~H?~Z~T",
-         "messageTest": "1"
+        "quickReplies": [
+          {
+            "action": "message",
+            "label": "?~D?",
+            "messageText": youtubeUrl,
+          },
+          {
+            "action": "message",
+            "label": "?~U~D?~K~H?~Z~T",
+            "messageTest": "1"
 
           }
         ]
@@ -227,3 +255,4 @@ class RecipeList {
 }
 
 module.exports = RecipeList;
+                                   

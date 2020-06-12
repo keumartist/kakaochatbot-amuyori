@@ -20,6 +20,7 @@ apiRouter.get('/allRecipes', function (req, res) {
 
 apiRouter.post('/recipeRecommend', function (req, res) {
 
+  const tastes = ["매운 맛", "담백한 맛", "단 맛", "새콤한 맛", "기름진 맛"];
   const tastes = ["매?~Z? ?~[", "?~K?백?~U~\ ?~[", "?~K? ?~[", "?~C~H콤?~U~\ ?~[", "기?~D?~D ?~["];
   /*  const situations = {
     "?~T??~A??~K~I?~[??~O" : "?~T??~A??~K~I",
