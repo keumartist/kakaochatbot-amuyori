@@ -1,4 +1,17 @@
-## 카카오 챗봇 스킬 서버 만들기 (nodejs + expressjs)
+## 2020-1학기 HCI 이론 및 실습 프로젝트 
+### 카카오톡 챗봇 "아무요리" 
+#### 자취생들의 요리를 도와주는 레시피 제공 챗봇 
+#### http://pf.kakao.com/_wXnSxb
+* 요리 이름으로 레시피 검색 
+* 재료로 레시피 검색
+* 상황별 추천, 취향별 추천 
+* 오늘의 요리 레시피 제공
+
+![amuyoripng](https://user-images.githubusercontent.com/54926767/85222267-c19e7180-b3f4-11ea-9fc1-5600794d9e69.png)
+
+----
+
+### 카카오 챗봇 스킬 서버 만들기 (nodejs + expressjs)
 #### 환경 만들기(터미널 명령어)
   * `nvm install —lts` (node version manager 설치. lts = long term support )
   * `mkdir skill-server-example`
